@@ -2,7 +2,7 @@
 citriena 2021
 
 ## Introduction
-Arduino key input support library for [Adafruit LCD Shield Kit w/ 16x2 Character Display - Only 2 pins used!](https://www.adafruit.com/product/772) or its compatibles.
+Arduino key input support library for [Adafruit LCD Shield Kit w/ 16x2 Character Display](https://www.adafruit.com/product/772) or its compatibles.
 
 ## Features
 simpleKeypad library can
@@ -14,7 +14,7 @@ This library is intended to be used with [lincomatic's LiquidTWI2 library](https
 
 ### Constructor
 ````
-simpleKeypad(int16_t interval, int16_t repeatDelay, int16_t readTimes);
+simpleKeypad(int16_t interval, int16_t repeatDelay);
 ````
 * interval（optional; default value: 200ms）
   * key input repeat interval (ms) when pressed continuously.
