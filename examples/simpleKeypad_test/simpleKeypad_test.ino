@@ -1,5 +1,5 @@
-#include <LiquidTWI2.h>        // https://github.com/lincomatic/LiquidTWI2
-#include <simpleKeypad_I2C.h>  // https://github.com/citriena/simpleKeypad_I2C
+#include <LiquidCrystal.h>
+#include <simpleKeypad.h> // https://github.com/citriena/simpleKeypad
 
 /*******************************************************
 Test sketch for simpleKeypad library for Arduino LCD keypad shield
@@ -14,14 +14,15 @@ Function:
  DOWN: decrease counter
 ********************************************************/
 
-LiquidTWI2 lcd(0x20);
+// select the pins used on the LCD panel
+LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 int interval = 200;
+
 simpleKeypad keypad(interval, 200);
 
+
 void setup() {
-  lcd.setMCPType(LTI_TYPE_MCP23017); 
-  // set up the LCD's number of rows and columns:
   lcd.begin(16, 2);
   lcd.setCursor(0,0);
   lcd.print("key  count   int");

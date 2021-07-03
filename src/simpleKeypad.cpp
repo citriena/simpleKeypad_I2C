@@ -1,11 +1,4 @@
-#include <LiquidTWI2.h>
-#include <simpleKeypad_I2C.h>
-
-
-#ifdef MCP23017
-// Connect via i2c, address 0x20 (A0-A2 not jumpered)
-LiquidTWI2 lcd_keypad(0x20);
-#endif
+#include <simpleKeypad.h>
 
 
 simpleKeypad::simpleKeypad(int16_t interval, int16_t repeatDelay, int16_t readTimes) :
@@ -30,52 +23,32 @@ simpleKeypad::simpleKeypad() {
 }
 
 
-#ifdef MCP23017
-btnCODE_t simpleKeypad::read_button_code() {
-  return (btnCODE_t)lcd_keypad.readButtons();
-}
+btnCODE_t simpleKeypad::read_buttons() {
 
-#else
-btnCODE_t simpleKeypad::read_button_code() {
+  static unsigned long prevKeyTime = 0;
+  unsigned long tKeyTime;
+  static int16_t repeatTimes = 0;
+  static btnCODE_t prevKeyCode = btnNONE;
   btnCODE_t keyCode = btnNONE;
 
   int16_t adc_key_in = 1023;                          // initial value is that of not key pressed
   int16_t key_in;
 
   for (int i = 0; i < _READ_TIMES; i++) {         // read _READ_TIMKES times for key bouncing measure
-    key_in = analogRead(0);                       // read the value from the sensor
+    key_in = analogRead(A0);                       // read the value from the sensor
     if (key_in < adc_key_in) adc_key_in = key_in; // use smallest value to avoid key chattering fault
   }
 // my buttons when read are centered at these valies: 0, 144, 329, 504, 741
 // we add approx 50 to those values and check to see if we are close
   if (adc_key_in > 1000) {
+    prevKeyCode = btnNONE;
     return btnNONE;         // We make this the 1st option for speed reasons since it will be the most likely result
-  }
-// キー押し続けた場合の処理のため、すぐにreturnしない。このため判定順序を入れ替えた。
+  }                         // キー押し続けた場合の処理のため、すぐにreturnしない。このため判定順序を入れ替えた。
   else if (adc_key_in > 700) keyCode = btnSELECT; //741
   else if (adc_key_in > 450) keyCode = btnLEFT;   //504
   else if (adc_key_in > 300) keyCode = btnDOWN;   //329
   else if (adc_key_in > 100) keyCode = btnUP;     //144
   else keyCode = btnRIGHT;  // 0
-
-  return keyCode;
-}
-#endif
-
-
-btnCODE_t simpleKeypad::read_buttons() {
-
-  static unsigned long prevKeyTime = 0;
-  unsigned long tKeyTime;
-  static int16_t repeatTimes = 0;
-  static btnCODE_t prevKeyCode = btnNONE;  // 前回押されていたキー
-  btnCODE_t keyCode = btnNONE;             // 押されているキー
-
-  keyCode = read_button_code();
-  if (keyCode == btnNONE) {
-    prevKeyCode = btnNONE;
-    return btnNONE;
-  }
 
   if (keyCode == prevKeyCode) {
     tKeyTime = millis() - _REPEAT_INTERVAL; // 

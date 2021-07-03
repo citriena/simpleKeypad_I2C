@@ -1,6 +1,7 @@
 # simpleKeypad_I2C
 
-citriena 2021
+https://github.com/citriena/simpleKeypad_I2C  
+(c) citriena (citriena@yahoo.co.jp)
 
 ## 概要
 
